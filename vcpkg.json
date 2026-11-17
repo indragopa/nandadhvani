@@ -1,0 +1,9 @@
+{
+  "name": "nandadhvani",
+  "version": "0.1.0",
+  "description": "NandaDhvani C++20 audiobook editor preview",
+  "license": "MIT",
+  "dependencies": [
+    { "name": "qtbase", "features": ["widgets"] }
+  ]
+}
