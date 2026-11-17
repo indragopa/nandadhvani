@@ -1,0 +1,44 @@
+name: build-and-test
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: '2024.11.16'
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: lukka/run-cmake@v10
+        with:
+          configurePreset: windows-release
+          buildPreset: windows-release
+          testPreset: windows-release
+      - name: Stage portable preview and Qt runtime
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/NandaDhvani-Portable | Out-Null
+          $exe = "${{ github.workspace }}/build/windows-release/NandaDhvani.exe"
+          Copy-Item $exe dist/NandaDhvani-Portable/
+          Copy-Item README.md LICENSE THIRD_PARTY_NOTICES.md dist/NandaDhvani-Portable/
+          $deploy = Get-ChildItem "${{ github.workspace }}/build/windows-release/vcpkg_installed/x64-windows/tools" -Filter windeployqt.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName
+          if (-not $deploy) { throw "windeployqt.exe not found in vcpkg installation" }
+          & $deploy --release --no-translations --dir dist/NandaDhvani-Portable $exe
+          if ($LASTEXITCODE -ne 0) { throw "windeployqt failed" }
+          Compress-Archive -Path dist/NandaDhvani-Portable/* -DestinationPath dist/NandaDhvani-Portable.zip -Force
+      - name: Build Windows installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
+        with:
+          path: installer/NandaDhvani.iss
+          options: /O+ /DAppVersion=${{ github.run_number }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NandaDhvani-Windows-${{ github.run_number }}
+          path: |
+            dist/NandaDhvani-Portable.zip
+            installer/output/NandaDhvani-Setup.exe
+            build/windows-release/NandaDhvani.exe

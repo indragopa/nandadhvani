@@ -1,0 +1,44 @@
+# Build outputs
+build/
+build-*/
+out/
+dist/
+*.exe
+*.zip
+*.msi
+# CMake / vcpkg
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+vcpkg_installed/
+# IDE
+.vs/
+*.user
+*.suo
+.idea/
+.vscode/
+*.vcxproj.filters
+# Qt
+*.ts.bak
+# Audio / projects (user media, never commit)
+*.wav
+*.flac
+*.mp3
+*.m4a
+*.ogg
+*.opus
+*.ndproj
+# Logs / temp
+*.log
+logs/
+temp/
+# Models (downloaded on demand, never commit)
+models/
+*.bin
+# Python (tooling only)
+__pycache__/
+*.pyc
+.venv/
+# OS
+.DS_Store
+Thumbs.db
