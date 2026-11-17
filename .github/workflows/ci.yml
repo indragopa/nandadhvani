@@ -11,7 +11,7 @@ jobs:
       - uses: lukka/run-vcpkg@v11
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          vcpkgGitCommitId: '2024.11.16'
+          vcpkgGitCommitId: 'b2cb0da531c2f1f740045bfe7c4dac59f0b2b69c'
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: lukka/run-cmake@v10
         with:
